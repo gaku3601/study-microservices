@@ -1,0 +1,4 @@
+package: github.com/gaku3601/study-microservices/authentication
+import:
+- package: github.com/gorilla/mux.git
+  version: ^1.6.0

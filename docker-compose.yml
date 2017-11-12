@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+    kong:
+        build: 
+            context: ./kong
+            dockerfile: Dockerfile
+        ports:
+            - 8000:8000
+            - 8443:8443
+            - 8001:8001
+            - 8444:8444
+        environment:
+            - "KONG_DATABASE=postgres"
+            - "KONG_CASSANDRA_CONTACT_POINTS=kong-database"
+            - "KONG_PG_HOST=kong-database"
+        links:
+            - kong-database:kong-database
+            - auth:auth
+    kong-database:
+        image: postgres:9.4
+        ports:
+            - 5432:5432
+        environment:
+            - "POSTGRES_USER=kong"
+            - "POSTGRES_DB=kong"
+    auth:
+        build:
+            context: ./authentication
+            dockerfile: Dockerfile
+        volumes:
+            - ./authentication:/go/src/authentication 
