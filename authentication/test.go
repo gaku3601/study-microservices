@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
+	jwt "github.com/dgrijalva/jwt-go"
 	mux "github.com/gorilla/mux.git"
 )
 
@@ -26,6 +28,15 @@ func YourHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("Gorillaaaaaaaaadaaaaaaaa!\n"))
 }
 
+type JwtKey struct {
+	Created_at  int    `json:"created_at"`
+	Id          string `json:"id"`
+	Algorithm   string `json:"algorithm"`
+	Key         string `json:"key"`
+	Secret      string `json:"secret"`
+	Consumer_id string `json:"consumer_id"`
+}
+
 func UserAuth(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var user User
@@ -37,8 +48,35 @@ func UserAuth(w http.ResponseWriter, r *http.Request) {
 	//認証処理
 	if user.ID == "gaku" && user.Pass == "gakugaku" {
 		user.IsAuth = true
+		//jwtの問い合わせ
+		url := "http://localhost:8001/consumers/gaku/jwt"
+		req, _ := http.NewRequest(
+			"POST",
+			url,
+			nil,
+		)
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+		jwtKey := new(JwtKey)
+		client := &http.Client{}
+		resp, _ := client.Do(req)
+		json.NewDecoder(resp.Body).Decode(&jwtKey)
+		defer resp.Body.Close()
+
+		createTokenString(jwtKey)
+
 	} else {
 		user.IsAuth = false
 	}
 	json.NewEncoder(w).Encode(user)
+}
+
+func createTokenString(jwtKey *JwtKey) string {
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"iss": jwtKey.Key,
+	})
+	tokenString, _ := token.SignedString([]byte(jwtKey.Secret))
+
+	fmt.Println(tokenString)
+	return "a"
 }
