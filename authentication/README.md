@@ -1,3 +1,7 @@
+# 設定
+環境変数AuthEnvにproduction or developと設定することで、設定ファイルを読み替えています。  
+developの場合設定する必要はありませんが、productionの場合は必ず環境変数を設定してください。  
+
 # 認証用のcurl
 
     curl -H 'Content-Type:application/json' -H 'User-Agent:iPhone' -H 'Accept-Encoding:gzip,deflate' -d '{"ID":"gaku","pass":"gakugaku"}' http://localhost:8080/users/auth

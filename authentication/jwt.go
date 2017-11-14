@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	jwt "github.com/dgrijalva/jwt-go"
+	viper "github.com/spf13/viper.git"
 )
 
 type JwtKey struct {
@@ -17,7 +18,7 @@ type JwtKey struct {
 }
 
 func fetchCreateToken() string {
-	url := "http://localhost:8001/consumers/gaku/jwt"
+	url := viper.GetString("TokenKeyServerURL")
 	req, _ := http.NewRequest(
 		"POST",
 		url,

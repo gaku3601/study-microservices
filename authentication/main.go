@@ -2,12 +2,17 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"os"
 
 	mux "github.com/gorilla/mux.git"
+	viper "github.com/spf13/viper.git"
 )
 
 func main() {
+	SetConfig()
+
 	r := mux.NewRouter()
 	// 単純なハンドラ
 	r.HandleFunc("/", YourHandler).Methods("POST")
@@ -41,9 +46,8 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	//認証処理
 	res := new(Response)
 	if user.ID == "gaku" && user.Pass == "gakugaku" {
-		//jwtの問い合わせ
+		//jwtトークンの取得
 		res.Token = fetchCreateToken()
-
 	} else {
 		res.Token = ""
 	}
@@ -53,4 +57,19 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 //ユーザ登録
 func SignUp(w http.ResponseWriter, r *http.Request) {
+}
+
+//configファイルの読み込み
+func SetConfig() {
+	if os.Getenv("AuthEnv") == "production" {
+		fmt.Println("環境:production")
+		viper.SetConfigName("config.production")
+		viper.AddConfigPath(".")
+		viper.ReadInConfig()
+	} else {
+		fmt.Println("環境:develop")
+		viper.SetConfigName("config.develop")
+		viper.AddConfigPath(".")
+		viper.ReadInConfig()
+	}
 }
