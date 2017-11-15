@@ -6,3 +6,4 @@ import:
   version: ^3.1.0
 - package: github.com/spf13/viper.git
   version: ^1.0.0
+- package: github.com/lib/pq
