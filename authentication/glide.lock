@@ -1,5 +1,5 @@
-hash: 34c0be51ab686795c57938d4759fb8df440f9796af216a5df60a11099820ef33
-updated: 2017-11-16T08:20:28.163731625+09:00
+hash: 38ba05c1be67953f4bd5c6bee84c8ffb6f81b51e8575d2b23672bb2e33debe0f
+updated: 2017-11-16T08:40:05.271992359+09:00
 imports:
 - name: github.com/dgrijalva/jwt-go
   version: dbeaa9332f19a944acb5736b4456cfcc02140e29
@@ -22,6 +22,8 @@ imports:
   - json/token
 - name: github.com/lib/pq
   version: 8c6ee72f3e6bcb1542298dd5f76cb74af9742cec
+  subpackages:
+  - oid
 - name: github.com/magiconair/properties
   version: 49d762b9817ba1c2e9d0c69183c2b4a8b8f1d934
 - name: github.com/mitchellh/mapstructure
@@ -40,6 +42,10 @@ imports:
   version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
 - name: github.com/spf13/viper.git
   version: 25b30aa063fc18e48662b86996252eabdcf2f0c7
+- name: golang.org/x/crypto
+  version: 9f005a07e0d31d45e6656d241bb5c0f2efd4bc94
+  subpackages:
+  - bcrypt
 - name: golang.org/x/sys
   version: bf42f188b9bc6f2cf5b8ee5a912ef1aedd0eba4c
   subpackages:

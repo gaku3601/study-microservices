@@ -7,3 +7,6 @@ import:
 - package: github.com/spf13/viper.git
   version: ^1.0.0
 - package: github.com/lib/pq
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt

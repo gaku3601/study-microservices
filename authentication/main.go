@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 
+	"golang.org/x/crypto/bcrypt"
+
 	_ "github.com/lib/pq"
 
 	mux "github.com/gorilla/mux.git"
@@ -73,7 +75,10 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 	db, _ := sql.Open("postgres", "user=postgres host=localhost dbname=auth_db port=5433 sslmode=disable")
 	defer db.Close()
 
-	_, err := db.Exec("INSERT INTO users(email, password) VALUES($1, $2);", user.Email, user.Password)
+	//passwordのhash化
+	bcryptPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+
+	_, err := db.Exec("INSERT INTO users(email, password) VALUES($1, $2);", user.Email, bcryptPassword)
 	if err != nil {
 		w.Write([]byte("Signup DB insert error: " + err.Error() + "\n"))
 	} else {
