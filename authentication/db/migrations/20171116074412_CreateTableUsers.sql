@@ -4,7 +4,8 @@
 create table Users (
   id            SERIAL     primary key,
   email char(40),
-  password char(60)
+  password char(60),
+  UNIQUE(email)
 );
 
 
