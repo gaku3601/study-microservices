@@ -32,6 +32,12 @@ type User struct {
 	Password string `json:"password"`
 }
 
+type UserTable struct {
+	ID       string `json:"id"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
 type Response struct {
 	Token string `json:"token"`
 }
@@ -49,14 +55,25 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("json decode error " + error.Error() + "\n"))
 	}
 
+	db, _ := sql.Open("postgres", "user=postgres host=localhost dbname=auth_db port=5433 sslmode=disable")
+	defer db.Close()
+
+	userTable := new(UserTable)
+	err := db.QueryRow("SELECT id,email,password FROM users where email = $1;", user.Email).Scan(&userTable.ID, &userTable.Email, &userTable.Password)
+	if err != nil {
+		w.Write([]byte("emailが登録されていません。:" + err.Error() + "\n"))
+		return
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(userTable.Password), []byte(user.Password))
+	if err != nil {
+		w.Write([]byte("email,passwordが違います。:" + err.Error() + "\n"))
+		return
+	}
+
 	//認証処理
 	res := new(Response)
-	if user.Email == "gaku" && user.Password == "gakugaku" {
-		//jwtトークンの取得
-		res.Token = fetchCreateToken()
-	} else {
-		res.Token = ""
-	}
+	res.Token = fetchCreateToken()
 	//返却
 	json.NewEncoder(w).Encode(res)
 }
