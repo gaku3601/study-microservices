@@ -3,20 +3,18 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
-	"os"
 
 	"golang.org/x/crypto/bcrypt"
 
+	"github.com/gaku3601/study-microservices/authentication/config"
 	_ "github.com/lib/pq"
 
 	mux "github.com/gorilla/mux.git"
-	viper "github.com/spf13/viper.git"
 )
 
 func main() {
-	SetConfig()
+	config.SetConfig()
 
 	r := mux.NewRouter()
 	// 単純なハンドラ
@@ -100,20 +98,5 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Signup DB insert error: " + err.Error() + "\n"))
 	} else {
 		w.Write([]byte("Signup OK\n"))
-	}
-}
-
-//configファイルの読み込み
-func SetConfig() {
-	if os.Getenv("AuthEnv") == "production" {
-		fmt.Println("環境:production")
-		viper.SetConfigName("config.production")
-		viper.AddConfigPath(".")
-		viper.ReadInConfig()
-	} else {
-		fmt.Println("環境:develop")
-		viper.SetConfigName("config.develop")
-		viper.AddConfigPath(".")
-		viper.ReadInConfig()
 	}
 }
