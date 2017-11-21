@@ -17,8 +17,6 @@ func main() {
 	config.SetConfig()
 
 	r := mux.NewRouter()
-	// 単純なハンドラ
-	r.HandleFunc("/", YourHandler).Methods("POST")
 	r.HandleFunc("/users/login", Login).Methods("POST")
 	r.HandleFunc("/users/signup", SignUp).Methods("POST")
 
@@ -38,10 +36,6 @@ type UserTable struct {
 
 type Response struct {
 	Token string `json:"token"`
-}
-
-func YourHandler(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Gorillaaaaaaaaadaaaaaaaa!\n"))
 }
 
 //ログイン認証。ログイン完了後、JWTトークンを返却する
