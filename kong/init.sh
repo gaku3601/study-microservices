@@ -10,4 +10,4 @@ echo "DB OK"
 kong migrations up
 
 #start
-kong start
+kong start && bash /api.sh 
