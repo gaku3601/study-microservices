@@ -32,6 +32,8 @@ services:
         links:
             - kong:kong
     auth-db:
-        image: gaku3601/ja-postgresql:9.6.5
+        image: gaku3601/ja-postgresql:9.6.5 
         ports:
             - 5433:5432
+        environment:
+            - "POSTGRES_DB=auth_db"
