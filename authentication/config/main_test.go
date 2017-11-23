@@ -8,16 +8,17 @@ import (
 func TestSetConfig(t *testing.T) {
 	//環境:productionの場合、configが読み込めるかのテスト
 	os.Setenv("AuthEnv", "production")
-	err := SetConfig()
+	err := SetConfig(".")
 
 	if err == nil {
 	} else {
+		t.Log(err)
 		t.Errorf("config読み取りエラー:production環境のconfigが読み込めません")
 	}
 
 	//環境:developの場合、configが読み込めるかのテスト
 	os.Setenv("AuthEnv", "develop")
-	err = SetConfig()
+	err = SetConfig(".")
 
 	if err == nil {
 	} else {
@@ -26,7 +27,7 @@ func TestSetConfig(t *testing.T) {
 
 	//環境:developでもproductionでもない環境変数が指定されている場合、Errorが返却されるか
 	os.Setenv("AuthEnv", "abababa")
-	err = SetConfig()
+	err = SetConfig(".")
 	if err.Error() == "developもしくはproductionを環境変数AuthEnvに指定して下さい。" {
 	} else {
 		t.Errorf("エラーハンドリングエラー")

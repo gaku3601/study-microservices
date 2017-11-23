@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	config.SetConfig()
+	config.SetConfig("./config")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/users/login", Login).Methods("POST")
