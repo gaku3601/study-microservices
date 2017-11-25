@@ -15,9 +15,10 @@ type JwtKey struct {
 	Key         string `json:"key"`
 	Secret      string `json:"secret"`
 	Consumer_id string `json:"consumer_id"`
+	UserID      string
 }
 
-func fetchCreateToken() string {
+func fetchCreateToken(userID string) string {
 	url := viper.GetString("TokenKeyServerURL")
 	req, _ := http.NewRequest(
 		"POST",
@@ -30,6 +31,8 @@ func fetchCreateToken() string {
 	client := &http.Client{}
 	resp, _ := client.Do(req)
 	json.NewDecoder(resp.Body).Decode(&jwtKey)
+
+	jwtKey.UserID = userID
 	defer resp.Body.Close()
 
 	return createTokenString(jwtKey)
@@ -37,6 +40,7 @@ func fetchCreateToken() string {
 
 func createTokenString(jwtKey *JwtKey) string {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"id":  jwtKey.UserID,
 		"iss": jwtKey.Key,
 	})
 	tokenString, _ := token.SignedString([]byte(jwtKey.Secret))

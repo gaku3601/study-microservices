@@ -14,10 +14,9 @@ type User struct {
 	Password string `json:"password"`
 }
 
-type UserTable struct {
-	ID       string `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+type FetchUser struct {
+	ID string `json:"id"`
+	User
 }
 
 type Response struct {
@@ -34,14 +33,14 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	dbc.DBConnect(func(db *sql.DB) {
-		userTable := new(UserTable)
-		err := db.QueryRow("SELECT id,email,password FROM users where email = $1;", user.Email).Scan(&userTable.ID, &userTable.Email, &userTable.Password)
+		fetchUser := new(FetchUser)
+		err := db.QueryRow("SELECT id,email,password FROM users where email = $1;", user.Email).Scan(&fetchUser.ID, &fetchUser.Email, &fetchUser.Password)
 		if err != nil {
 			w.Write([]byte("emailが登録されていません。:" + err.Error() + "\n"))
 			return
 		}
 
-		err = bcrypt.CompareHashAndPassword([]byte(userTable.Password), []byte(user.Password))
+		err = bcrypt.CompareHashAndPassword([]byte(fetchUser.Password), []byte(user.Password))
 		if err != nil {
 			w.Write([]byte("email,passwordが違います。:" + err.Error() + "\n"))
 			return
@@ -49,7 +48,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 
 		//認証処理
 		res := new(Response)
-		res.Token = fetchCreateToken()
+		res.Token = fetchCreateToken(fetchUser.ID)
 		//返却
 		json.NewEncoder(w).Encode(res)
 	})
