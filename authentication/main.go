@@ -12,11 +12,15 @@ import (
 )
 
 func main() {
-	config.SetConfig("./config")
+	readConfig("./config")
 
 	r := mux.NewRouter()
 	r.HandleFunc("/users/login", login.Login).Methods("POST")
 	r.HandleFunc("/users/signup", signup.SignUp).Methods("POST")
 
 	http.ListenAndServe(":8080", r)
+}
+
+func readConfig(path string) {
+	config.SetConfig(path)
 }
