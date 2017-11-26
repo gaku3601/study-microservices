@@ -29,12 +29,22 @@ services:
             context: ./authentication
             dockerfile: Dockerfile
         environment:
-            - "AuthEnv=develop"
+            - "AuthEnv=production"
         volumes:
-            - ./authentication:/go/src/authentication 
+            - ./authentication:/go/src/github.com/gaku3601/study-microservices/authentication
         links:
             - auth-db:auth-db
+    apis:
+        build:
+            context: ./apis
+            dockerfile: Dockerfile
+        depends_on:
+            - kong
+        links:
+            - kong:kong
     auth-db:
-        image: gaku3601/ja-postgresql:9.6.5
+        image: gaku3601/ja-postgresql:9.6.5 
         ports:
             - 5433:5432
+        environment:
+            - "POSTGRES_DB=auth_db"
